@@ -1,6 +1,11 @@
 import trie from "../data/trie.json";
-import stats from "../data/stats.json";
-import handlers from "../data/handlers.json";
+import tokensJson from "../data/tokens.json";
+import handlersJson from "../data/handlers.json";
+import type { Token } from "./types/stats";
+import type { IntHandler, StatHandlers } from "./types/handlers";
+
+const tokens = tokensJson as Record<string, Token[]>;
+const handlers = handlersJson as StatHandlers;
 
 export interface Trie {
   childMap?: { [token: string]: Trie };
@@ -12,26 +17,101 @@ export interface Trie {
   terminal?: string;
 }
 
-export function search(
+export interface ParseResult {
+  text: string;
+  stats: ParsedStat[];
+}
+
+export interface ParsedStat {
+  /**
+   * The id of the row in Stats.dat
+   */
+  id: string;
+  /**
+   * The template variable in the stat text (e.g. {0})
+   */
+  index: number;
+  /**
+   * The value as read from the mod that was parsed
+   */
+  parsedValue: number;
+  /**
+   * Approximate value of the raw value of this stat as per the game files
+   * (for instance if the game stores the stat as ms but displays it as seconds,
+   * this will be the ms value).
+   */
+  baseValue: number;
+}
+
+export function parse(
   mod: string,
   log: (...args: any[]) => void = () => {}
-): string[] {
+): ParseResult[] {
   const words = tokenise(mod);
   log(words);
-  const results: string[] = [];
+  const results: ParseResult[] = [];
   let count = 0;
   while (count < words.length) {
-    const result = searchTrie(words[0], words, 1, trie as Trie, log);
-    if (!result.text || result.count === 0) {
+    const found = searchTrie(words[0], words, 1, trie as Trie, log);
+    if (!found.text || found.count === 0) {
       count = count + 1;
       continue;
     }
-    results.push(result.text);
-    count += result.count;
-    log(result);
+    const result: ParseResult = {
+      text: found.text,
+      stats: found.stats
+        ? Object.entries(found.stats).map(([id, parsedValue]) => ({
+            id,
+            index: -1,
+            parsedValue,
+            baseValue: parsedValue,
+          }))
+        : [],
+    };
+    results.push(result);
+    tokens[found.text].forEach((t) => {
+      if (t.type === "number") {
+        const parsedValue = found.values.shift();
+        if (parsedValue === undefined) {
+          throw new Error("Missing value for stat" + t.stat);
+        }
+        let baseValue = (t.stat_value_handlers || []).reduceRight(
+          (n, h) => reverseHandler(n, handlers[h] as IntHandler),
+          parsedValue
+        );
+        result.stats.push({
+          id: t.stat,
+          index: t.index,
+          parsedValue,
+          baseValue,
+        });
+      } else if (t.type === "enum") {
+        const parsedValue = found.values.shift();
+        if (parsedValue === undefined) {
+          throw new Error("Missing value for stat" + t.stat);
+        }
+        result.stats.push({
+          id: t.stat,
+          index: t.index,
+          parsedValue,
+          baseValue: parsedValue,
+        });
+      }
+    });
+
+    count += found.count;
+    log(found);
   }
+
   log(results);
   return results;
+}
+
+function reverseHandler(
+  n: number,
+  { addend = 0, multiplier = 1, divisor = 1 }: IntHandler
+): number {
+  return ((n - addend) * divisor) / multiplier;
 }
 
 function tokenise(str: string) {
