@@ -1,0 +1,23 @@
+{
+  "name": "poestat",
+  "module": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "json-schema-to-typescript": "^14.0.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "generate-json": "bun run scripts/write.ts",
+    "generate-types": "bun run scripts/types.ts",
+    "build": "bun build src/index.ts --outfile=dist/index.js"
+  },
+  "files": [
+    "src",
+    "dist"
+  ]
+}
