@@ -24,45 +24,10 @@ export function parse(
     }
     const result: ParseResult = {
       text: found.text,
-      stats: found.stats
-        ? Object.entries(found.stats).map(([id, parsedValue]) => ({
-            id,
-            index: -1,
-            parsedValue,
-            baseValue: parsedValue,
-          }))
-        : [],
+      stats: [],
     };
     results.push(result);
-    tokens[found.text].forEach((t) => {
-      if (t.type === "number") {
-        const parsedValue = found.values.shift();
-        if (parsedValue === undefined) {
-          throw new Error("Missing value for stat" + t.stat);
-        }
-        const baseValue = (t.stat_value_handlers || []).reduceRight(
-          (n, h) => reverseHandler(n, handlers[h] as IntHandler),
-          parsedValue
-        );
-        result.stats.push({
-          id: t.stat,
-          index: t.index,
-          parsedValue,
-          baseValue,
-        });
-      } else if (t.type === "enum") {
-        const parsedValue = found.values.shift();
-        if (parsedValue === undefined) {
-          throw new Error("Missing value for stat" + t.stat);
-        }
-        result.stats.push({
-          id: t.stat,
-          index: t.index,
-          parsedValue,
-          baseValue: parsedValue,
-        });
-      }
-    });
+    processTokens(found, result);
 
     index += found.count;
     log(found);
@@ -70,6 +35,45 @@ export function parse(
 
   log(results);
   return results;
+}
+
+function processTokens(found: IntermediateResult, result: ParseResult) {
+  tokens[found.text!].forEach((t) => {
+    if (t.type === "number") {
+      const parsedValue = found.values.shift();
+      if (parsedValue === undefined) {
+        throw new Error("Missing value for stat" + t.stat);
+      }
+      const baseValue = (t.stat_value_handlers || []).reduceRight(
+        (n, h) => reverseHandler(n, handlers[h] as IntHandler),
+        parsedValue
+      );
+      result.stats.push({
+        id: t.stat,
+        index: t.index,
+        parsedValue,
+        baseValue,
+      });
+    } else if (t.type === "enum") {
+      const parsedValue = found.values.shift();
+      if (parsedValue === undefined) {
+        throw new Error("Missing value for stat" + t.stat);
+      }
+      result.stats.push({
+        id: t.stat,
+        index: t.index,
+        parsedValue,
+        baseValue: parsedValue,
+      });
+    } else if (t.type === "nested") {
+      const nested = found.nested;
+      if (!nested?.text) {
+        throw new Error("Missing nested stat for " + found.text);
+      }
+      result.text = result.text.replace("{0}", nested.text);
+      processTokens(nested, result);
+    }
+  });
 }
 
 function reverseHandler(
@@ -87,7 +91,7 @@ interface IntermediateResult {
   text: string | undefined;
   count: number;
   values: number[];
-  stats?: { [stat: string]: number };
+  nested?: IntermediateResult;
 }
 
 function searchTrie(
@@ -174,8 +178,7 @@ function searchTrie(
     );
     if (result.text) {
       result.count += nested.count;
-      if (!result.stats) result.stats = {};
-      if (node.statValue) result.stats[node.statValue] = 1;
+      result.nested = nested;
       results.push(result);
     }
   }

@@ -23,6 +23,7 @@ jobs:
           bun install
           bun run generate-json
           bun run generate-types
+          bun test
           bun run build
           cp src/types/index.d.ts dist/index.d.ts
           npm publish
