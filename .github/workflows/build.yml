@@ -1,0 +1,20 @@
+name: build and test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["develop"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: install bun
+        uses: oven-sh/setup-bun@v1
+      - run: |
+          bun install
+          bun run generate-json
+          bun run generate-types
+          bun run build
