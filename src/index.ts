@@ -3,49 +3,14 @@ import tokensJson from "../data/tokens.json";
 import handlersJson from "../data/handlers.json";
 import type { Token } from "./types/stats";
 import type { IntHandler, StatHandlers } from "./types/handlers";
+import type { ParseResult, Trie } from "./types";
 
 const tokens = tokensJson as Record<string, Token[]>;
 const handlers = handlersJson as StatHandlers;
 
-export interface Trie {
-  childMap?: { [token: string]: Trie };
-  numChild?: Trie;
-  anyChild?: Trie;
-  statChild?: Trie;
-  statId?: string;
-  statValue?: number;
-  terminal?: string;
-}
-
-export interface ParseResult {
-  text: string;
-  stats: ParsedStat[];
-}
-
-export interface ParsedStat {
-  /**
-   * The id of the row in Stats.dat
-   */
-  id: string;
-  /**
-   * The template variable in the stat text (e.g. {0})
-   */
-  index: number;
-  /**
-   * The value as read from the mod that was parsed
-   */
-  parsedValue: number;
-  /**
-   * Approximate value of the raw value of this stat as per the game files
-   * (for instance if the game stores the stat as ms but displays it as seconds,
-   * this will be the ms value).
-   */
-  baseValue: number;
-}
-
 export function parse(
   mod: string,
-  log: (...args: any[]) => void = () => {}
+  log: (...args: unknown[]) => void = () => {}
 ): ParseResult[] {
   const words = tokenise(mod);
   log(words);
@@ -75,7 +40,7 @@ export function parse(
         if (parsedValue === undefined) {
           throw new Error("Missing value for stat" + t.stat);
         }
-        let baseValue = (t.stat_value_handlers || []).reduceRight(
+        const baseValue = (t.stat_value_handlers || []).reduceRight(
           (n, h) => reverseHandler(n, handlers[h] as IntHandler),
           parsedValue
         );

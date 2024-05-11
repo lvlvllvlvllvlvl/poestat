@@ -18,4 +18,5 @@ jobs:
           bun run generate-json
           bun run generate-types
           bun run build
+          cp src/types/index.d.ts dist/index.d.ts
           bun test

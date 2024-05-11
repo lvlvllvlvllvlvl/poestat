@@ -24,6 +24,7 @@ jobs:
           bun run generate-json
           bun run generate-types
           bun run build
+          cp src/types/index.d.ts dist/index.d.ts
           npm publish
           git push origin ${{ github.ref_name }}
         env:
