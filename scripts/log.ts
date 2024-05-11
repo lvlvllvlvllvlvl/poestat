@@ -1,3 +1,3 @@
 import { parse } from "../src";
 
-parse(Bun.argv[2], console.log);
+console.log(parse(Bun.argv[2], console.log));

@@ -13,13 +13,13 @@ export function parse(
   log: (...args: unknown[]) => void = () => {}
 ): ParseResult[] {
   const words = tokenise(mod);
-  log(words);
+  log(mod, words);
   const results: ParseResult[] = [];
-  let count = 0;
-  while (count < words.length) {
-    const found = searchTrie(words[0], words, 1, trie as Trie, log);
+  let index = 0;
+  while (index < words.length) {
+    const found = searchTrie(words[index], words, index + 1, trie as Trie, log);
     if (!found.text || found.count === 0) {
-      count = count + 1;
+      index = index + 1;
       continue;
     }
     const result: ParseResult = {
@@ -64,7 +64,7 @@ export function parse(
       }
     });
 
-    count += found.count;
+    index += found.count;
     log(found);
   }
 
