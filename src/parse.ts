@@ -6,39 +6,40 @@ import type { StatHandlers } from "./types/handlers.js";
 /**
  * Codes taken from the 'preferred language' setting at https://www.pathofexile.com/my-account/preferences
  */
-export const LANGS = {
-  English: "en-US",
-  French: "fr-FR",
-  German: "de-DE",
-  Japanese: "ja-JP",
-  Korean: "ko-KR",
-  Portuguese: "pt-BR",
-  Russian: "ru-RU",
-  Spanish: "es-ES",
-  Thai: "th-TH",
-  /**
-   * Chinese not present in the settings, should this be zh-Hant?
-   */
-  "Traditional Chinese": "zh-TW",
-} as const;
+export const LANGS = [
+  "English",
+  "French",
+  "German",
+  "Japanese",
+  "Korean",
+  "Portuguese",
+  "Russian",
+  "Spanish",
+  "Thai",
+  "Traditional Chinese",
+] as const;
 
-export const forLang = (lang: keyof typeof LANGS = "English") =>
-  createParser(
+export type Language = (typeof LANGS)[number];
+
+export const getParser = (lang: Language = "English") =>
+  fromUrls(
     `https://lvlvllvlvllvlvl.github.io/RePoE${lang === "English" ? "" : "/" + lang}/stats_by_file.min.json`,
     `https://lvlvllvlvllvlvl.github.io/RePoE${lang === "English" ? "" : "/" + lang}/stat_value_handlers.min.json`
   );
 
-export const createParser = async (
-  statsUrl = "https://lvlvllvlvllvlvl.github.io/RePoE/stats_by_file.min.json",
-  handlersUrl = "https://lvlvllvlvllvlvl.github.io/RePoE/stat_value_handlers.min.json"
+export const fromUrls = async (
+  ...urls: [statsUrl: string, handlersUrl: string]
 ) => {
-  const stats: StatsByFile = await fetch(statsUrl)
-    .then((r) => r.text())
-    .then((t) => JSON.parse(t.normalize()));
+  const json = (await Promise.all(
+    urls.map((u) => fetch(u).then((r) => r.text()))
+  )) as [string, string];
+  return fromJson(...json);
+};
 
-  const handlers: StatHandlers = await fetch(handlersUrl)
-    .then((r) => r.text())
-    .then((t) => JSON.parse(t.normalize()));
+export const fromJson = async (statsJson: string, handlerJson: string) => {
+  const stats: StatsByFile = JSON.parse(statsJson.normalize());
+
+  const handlers: StatHandlers = JSON.parse(handlerJson.normalize());
 
   const tokens = Object.fromEntries(
     Object.entries(stats).map(([k, v]) => [k, v.tokens])
@@ -55,9 +56,12 @@ export const createParser = async (
   return new Parser(trie, tokens, implied, handlers);
 };
 
-export const parse = async (text: string) => {
-  for (const lang of Object.keys(LANGS)) {
-    const result = (await forLang(lang as any)).parse(text);
+const tmp: { [lang in Language]?: Promise<Parser> } = {};
+
+export const parse = async (text: string, languages = LANGS) => {
+  for (const lang of languages) {
+    const parser = await (tmp[lang] = tmp[lang] || getParser(lang));
+    const result = parser.parse(text);
     if (result.length) return result;
   }
 };

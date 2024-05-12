@@ -32,7 +32,7 @@ export interface RelationalData {
 }
 export interface Predicate {
   column?: string;
-  value?: unknown;
+  value?: number;
 }
 export interface CanonicalLine {
   type: "string";

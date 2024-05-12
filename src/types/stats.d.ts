@@ -17,12 +17,10 @@ export interface Stat {
   implied_stats?: {
     [k: string]: number;
   };
-  [k: string]: unknown;
 }
 export interface Literal {
   type: "literal";
   value: string;
-  [k: string]: unknown;
 }
 /**
  * Matches a number of the form /[+-]?\d*\.?\d+/
@@ -32,7 +30,6 @@ export interface Number {
   index: number;
   stat: string;
   stat_value_handlers?: string[];
-  [k: string]: unknown;
 }
 /**
  * Integer stat values mapped to rows of a dat file.
@@ -45,7 +42,6 @@ export interface Enum {
    * Reference to the entry in stat_value_handlers.json where the enum values can be found.
    */
   stat_value_handler: string;
-  [k: string]: unknown;
 }
 /**
  * How to handle this item is not known. At the current time only the 'sells for an additional unique <base item type>' crucible mod has an unknown token.
@@ -55,7 +51,6 @@ export interface Unknown {
   index: number;
   stat: string;
   stat_value_handler?: string;
-  [k: string]: unknown;
 }
 /**
  * Matches any other stat - used by 'While a ... is in your Presence, <stat>' mods
@@ -63,5 +58,4 @@ export interface Unknown {
 export interface NestedStat {
   type: "nested";
   added_stat: string;
-  [k: string]: unknown;
 }
