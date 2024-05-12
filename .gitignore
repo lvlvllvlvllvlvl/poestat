@@ -174,3 +174,11 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Rust
+/target
+**/*.rs.bk
+Cargo.lock
+bin/
+pkg/
+wasm-pack.log

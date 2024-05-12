@@ -1,4 +1,4 @@
-import { parse } from "../src";
+import { parse } from "../ts";
 import mods from "../test/data/all-mods.json";
 
 Promise.all(Object.keys(mods).map((m) => parse(m).then((r) => [m, r])))

@@ -1,6 +1,6 @@
 {
   "name": "poestat",
-  "module": "src/index.ts",
+  "module": "ts/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -13,10 +13,10 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "bun build src/*.ts --outdir=dist --splitting"
+    "build": "wasm-pack build --target web && bun build ts/*.ts --outdir=dist --splitting"
   },
   "files": [
-    "src",
+    "ts",
     "dist"
   ]
 }

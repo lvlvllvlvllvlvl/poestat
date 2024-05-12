@@ -24,7 +24,7 @@ jobs:
           ./generate.sh
           bun test
           bun run build
-          cp src/types/index.d.ts dist/index.d.ts
+          cp ts/types/index.d.ts dist/index.d.ts
           npm publish
           git push origin ${{ github.ref_name }}
         env:

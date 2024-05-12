@@ -1,6 +1,6 @@
-import { TrieBuilder } from "../src/trie-builder";
-import type { StatHandlers } from "../src/types/handlers";
-import type { StatsByFile } from "../src/types/stats";
+import { TrieBuilder } from "../ts/trie-builder";
+import type { StatHandlers } from "../ts/types/handlers";
+import type { StatsByFile } from "../ts/types/stats";
 
 const stats: StatsByFile = await fetch(
   "https://lvlvllvlvllvlvl.github.io/RePoE/stats_by_file.min.json"
