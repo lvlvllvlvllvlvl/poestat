@@ -13,6 +13,13 @@ export interface ParseResult {
   stats: ParsedStat[];
 }
 
+export interface IntermediateResult {
+  text: string | undefined;
+  count: number;
+  values: number[];
+  nested?: IntermediateResult;
+}
+
 export interface ParsedStat {
   /**
    * The id of the row in Stats.dat

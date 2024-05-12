@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "sideEffects": false,
   "devDependencies": {
     "@types/bun": "latest",
     "json-schema-to-typescript": "^14.0.4"
@@ -14,7 +15,7 @@
   "scripts": {
     "generate-json": "bun run scripts/write.ts",
     "generate-types": "bun run scripts/types.ts",
-    "build": "bun build src/index.ts --outfile=dist/index.js"
+    "build": "bun build src/*.ts --outdir=dist --splitting"
   },
   "files": [
     "src",
