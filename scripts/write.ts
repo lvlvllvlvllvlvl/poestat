@@ -1,4 +1,16 @@
-import { trie, stats, handlers } from "./create-trie.js";
+import { TrieBuilder } from "../src/trie-builder";
+import type { StatHandlers } from "../src/types/handlers";
+import type { StatsByFile } from "../src/types/stats";
+
+const stats: StatsByFile = await fetch(
+  "https://lvlvllvlvllvlvl.github.io/RePoE/stats_by_file.min.json"
+).then((r) => r.json());
+
+const handlers: StatHandlers = await fetch(
+  "https://lvlvllvlvllvlvl.github.io/RePoE/stat_value_handlers.min.json"
+).then((r) => r.json());
+
+const trie = new TrieBuilder(stats, handlers).build();
 
 Bun.write("data/trie.json", JSON.stringify(trie, undefined, 2));
 Bun.write("data/stats.json", JSON.stringify(stats, undefined, 2));
