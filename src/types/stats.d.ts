@@ -14,6 +14,9 @@ export interface Stat {
   files: string[];
   generated_name: string;
   tokens: Token[];
+  implied_stats?: {
+    [k: string]: number;
+  };
   [k: string]: unknown;
 }
 export interface Literal {

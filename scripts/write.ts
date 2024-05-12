@@ -10,4 +10,16 @@ Bun.write(
     2
   )
 );
+Bun.write(
+  "data/implied.json",
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(stats)
+        .filter(([, v]) => v.implied_stats)
+        .map(([k, v]) => [k, v.implied_stats])
+    ),
+    undefined,
+    2
+  )
+);
 Bun.write("data/handlers.json", JSON.stringify(handlers, undefined, 2));

@@ -15,8 +15,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
       - run: |
           bun install
-          bun run generate-json
-          bun run generate-types
+          ./generate.sh
           bun run build
           cp src/types/index.d.ts dist/index.d.ts
           bun test

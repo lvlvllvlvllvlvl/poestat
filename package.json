@@ -13,8 +13,6 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "generate-json": "bun run scripts/write.ts",
-    "generate-types": "bun run scripts/types.ts",
     "build": "bun build src/*.ts --outdir=dist --splitting"
   },
   "files": [

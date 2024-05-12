@@ -21,8 +21,7 @@ jobs:
           git config user.email "119665497+lvlvllvlvllvlvl@users.noreply.github.com"
           npm version from-git
           bun install
-          bun run generate-json
-          bun run generate-types
+          ./generate.sh
           bun test
           bun run build
           cp src/types/index.d.ts dist/index.d.ts

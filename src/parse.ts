@@ -1,5 +1,6 @@
 import handlersJson from "../data/handlers.json";
 import tokensJson from "../data/tokens.json";
+import implied from "../data/implied.json";
 import trie from "../data/trie.json";
 import { searchTrie } from "./searchTrie";
 import type { IntermediateResult, ParseResult } from "./types";
@@ -28,7 +29,7 @@ export function parse(
       stats: [],
     };
     results.push(result);
-    processTokens(found, result);
+    processResult(found, result);
 
     index += found.count;
     log(found);
@@ -38,10 +39,15 @@ export function parse(
   return results;
 }
 
-function processTokens(found: IntermediateResult, result: ParseResult) {
-  tokens[found.text!].forEach((t) => {
+function processResult(input: IntermediateResult, output: ParseResult) {
+  processTokens(input, output);
+  processImplications(input, output);
+}
+
+function processTokens(input: IntermediateResult, output: ParseResult) {
+  tokens[input.text!].forEach((t) => {
     if (t.type === "number") {
-      const parsedValue = found.values.shift();
+      const parsedValue = input.values.shift();
       if (parsedValue === undefined) {
         throw new Error("Missing value for stat" + t.stat);
       }
@@ -49,32 +55,47 @@ function processTokens(found: IntermediateResult, result: ParseResult) {
         (n, h) => reverseHandler(n, handlers[h] as IntHandler),
         parsedValue
       );
-      result.stats.push({
+      output.stats.push({
         id: t.stat,
         index: t.index,
         parsedValue,
         baseValue,
       });
     } else if (t.type === "enum") {
-      const parsedValue = found.values.shift();
+      const parsedValue = input.values.shift();
       if (parsedValue === undefined) {
         throw new Error("Missing value for stat" + t.stat);
       }
-      result.stats.push({
+      output.stats.push({
         id: t.stat,
         index: t.index,
         parsedValue,
         baseValue: parsedValue,
       });
     } else if (t.type === "nested") {
-      const nested = found.nested;
+      const nested = input.nested;
       if (!nested?.text) {
-        throw new Error("Missing nested stat for " + found.text);
+        throw new Error("Missing nested stat for " + input.text);
       }
-      result.text = result.text.replace("{0}", nested.text);
-      processTokens(nested, result);
+      output.text = output.text.replace("{0}", nested.text);
+      processResult(nested, output);
     }
   });
+}
+
+function processImplications(input: IntermediateResult, output: ParseResult) {
+  const stats = implied[input.text as keyof typeof implied];
+  if (!stats) return;
+  for (const [id, value] of Object.entries(stats)) {
+    if (value) {
+      output.stats.push({
+        id,
+        index: -1,
+        parsedValue: value,
+        baseValue: value,
+      });
+    }
+  }
 }
 
 function reverseHandler(
