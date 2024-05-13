@@ -21,11 +21,10 @@ export interface RelationalData {
   index_column?: string;
   type: "relational";
   value_column: string;
+  /**
+   * Map from integer stat values to text associated with that value
+   */
   values: {
-    /**
-     * This interface was referenced by `undefined`'s JSON-Schema definition
-     * via the `patternProperty` "^\d+$".
-     */
     [k: string]: string;
   };
   predicate?: Predicate;

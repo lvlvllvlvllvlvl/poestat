@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { parse } from "../ts";
 import mods from "./data/parse-results.json";
 
-import init, { hello } from "../pkg/poestat_wasm";
+import init, { RSError, hello } from "../pkg/poestat_wasm";
 
 test("all mods", async () => {
   for (const e of Object.entries(mods)) {
@@ -11,8 +11,21 @@ test("all mods", async () => {
 });
 
 test("wasm", async () => {
-  for (const e of Object.entries(mods)) {
-    await init()
-    expect(hello()).toEqual("hellp");
+  await init();
+  const json = (await Promise.all(
+    [
+      `https://lvlvllvlvllvlvl.github.io/RePoE/stats_by_file.min.json`,
+      `https://lvlvllvlvllvlvl.github.io/RePoE/stat_value_handlers.min.json`,
+    ].map((u) => fetch(u).then((r) => r.text()))
+  )) as [string, string];
+  try {
+    expect(hello(...json)).toBeGreaterThan(150000);
+  } catch (e) {
+    if (e instanceof RSError) {
+      console.log(e.get_message(), e.get_location(), e.get_debug());
+      e.free();
+    } else {
+      throw e;
+    }
   }
 });

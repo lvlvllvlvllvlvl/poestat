@@ -19,5 +19,4 @@ jobs:
           bun install
           ./generate.sh
           bun run build
-          cp ts/types/index.d.ts dist/index.d.ts
           bun test

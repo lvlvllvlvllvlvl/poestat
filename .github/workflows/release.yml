@@ -15,6 +15,8 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - name: install bun
         uses: oven-sh/setup-bun@v1
+      - name: install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
       - name: npm build and publish
         run: |
           git config user.name "GitHub Release Action"
@@ -26,6 +28,8 @@ jobs:
           bun run build
           cp ts/types/index.d.ts dist/index.d.ts
           npm publish
+          git add .
+          git commit -m 'release build'
           git push origin ${{ github.ref_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
