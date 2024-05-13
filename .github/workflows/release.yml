@@ -23,8 +23,8 @@ jobs:
           git config user.email "119665497+lvlvllvlvllvlvl@users.noreply.github.com"
           npm version from-git
           bun install
-          bun test
           bun run build
+          bun test
           cp ts/types/index.d.ts dist/index.d.ts
           npm publish
         env:
