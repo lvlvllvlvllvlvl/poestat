@@ -5,8 +5,20 @@ on:
   push:
     branches: ["develop"]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -29,3 +41,17 @@ jobs:
           ./generate.sh
           bun run build
           bun test
+          bun link
+      - name: build pages
+        run: |
+          bun install
+          bun link poestat
+          bun run build
+        working-directory: pages
+      - name: upload pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages/dist
+      - name: deploy pages
+        id: deployment
+        uses: actions/deploy-pages@v4
