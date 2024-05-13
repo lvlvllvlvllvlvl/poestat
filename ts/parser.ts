@@ -124,7 +124,8 @@ export class Parser {
     i: number,
     node: Trie,
     root: Trie,
-    log: (...args: any[]) => void
+    log: (...args: any[]) => void,
+    canRecurse = true
   ): IntermediateResult {
     log(
       i,
@@ -213,21 +214,23 @@ export class Parser {
       }
     }
 
-    if (node.statChild) {
-      const nested = this.searchTrie(word, words, i, root, root, log);
+    if (node.statChild && canRecurse) {
+      const nested = this.searchTrie(word, words, i, root, root, log, false);
       log("nested stat", nested);
-      const result = this.searchTrie(
-        words[i + nested.count - 1],
-        words,
-        i + nested.count,
-        node.statChild,
-        root,
-        log
-      );
-      if (result.text) {
-        result.count += nested.count;
-        result.nested = nested;
-        results.push(result);
+      if (nested.text) {
+        const result = this.searchTrie(
+          words[i + nested.count - 1],
+          words,
+          i + nested.count,
+          node.statChild,
+          root,
+          log
+        );
+        if (result.text) {
+          result.count += nested.count;
+          result.nested = nested;
+          results.push(result);
+        }
       }
     }
     if (node.anyChild) {

@@ -2,7 +2,7 @@
   "name": "poestat",
   "module": "ts/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/types/index.d.ts",
   "type": "module",
   "sideEffects": false,
   "devDependencies": {

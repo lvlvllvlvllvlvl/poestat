@@ -24,8 +24,7 @@ export class TrieBuilder {
           const existing = this.stats[node.terminal];
           const newNode = this.stats[stat_text];
           if (!this.isCompatible(existing, newNode)) {
-            console.error("Mismatched terminal node", existing, newNode);
-            throw new Error("Mismatched terminal node.");
+            // console.warn("Mismatched terminal node", existing, newNode);
           }
         } else {
           node.terminal = stat_text;

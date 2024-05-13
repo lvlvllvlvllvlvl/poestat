@@ -1,2 +1,2 @@
 export { Parser } from "./parser";
-export { parse } from "./parse";
+export * from "./parse";

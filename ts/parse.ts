@@ -58,10 +58,12 @@ export const fromJson = async (statsJson: string, handlerJson: string) => {
 
 const tmp: { [lang in Language]?: Promise<Parser> } = {};
 
-export const parse = async (text: string, languages = LANGS) => {
-  for (const lang of languages) {
+export const parse = async (text: string, ...languages: Language[]) => {
+  if (!text) return [];
+  for (const lang of languages.length === 0 ? LANGS : languages) {
     const parser = await (tmp[lang] = tmp[lang] || getParser(lang));
     const result = parser.parse(text);
     if (result.length) return result;
   }
+  return [];
 };

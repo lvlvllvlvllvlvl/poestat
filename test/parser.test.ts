@@ -1,12 +1,18 @@
 import { expect, test } from "bun:test";
-import { parse } from "../ts";
+import { parse, LANGS } from "../ts";
 import mods from "./data/parse-results.json";
 
 import init, { RSError, hello } from "../pkg/poestat_wasm";
 
-test("all mods", async () => {
+test("all mods (%p)", async () => {
   for (const e of Object.entries(mods)) {
     expect(await parse(e[0])).toEqual(e[1]);
+  }
+});
+
+test.each(LANGS.map((l) => [l]))("bad data (%p)", async (lang) => {
+  for (const e of ["bad data", "15% increased bad data", "Socketed bad data"]) {
+    expect(await parse(e[0], lang)).toEqual([]);
   }
 });
 
