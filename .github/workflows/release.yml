@@ -19,17 +19,11 @@ jobs:
         uses: jetli/wasm-pack-action@v0.4.0
       - name: npm build and publish
         run: |
-          git config user.name "GitHub Release Action"
-          git config user.email "119665497+lvlvllvlvllvlvl@users.noreply.github.com"
           npm version from-git
           bun install
-          ./generate.sh
           bun test
           bun run build
           cp ts/types/index.d.ts dist/index.d.ts
           npm publish
-          git add .
-          git commit -m 'release build'
-          git push origin ${{ github.ref_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
