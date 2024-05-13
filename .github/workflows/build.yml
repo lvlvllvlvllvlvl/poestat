@@ -44,8 +44,8 @@ jobs:
           bun link
       - name: build pages
         run: |
-          bun install
           bun link poestat
+          bun install
           bun run build
         working-directory: pages
       - name: upload pages
