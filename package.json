@@ -1,8 +1,8 @@
 {
   "name": "poestat",
-  "module": "ts/index.ts",
-  "main": "dist/index.js",
-  "types": "src/types/index.d.ts",
+  "exports": "./ts/index.ts",
+  "main": "dist/index",
+  "types": "dist/index",
   "type": "module",
   "sideEffects": false,
   "devDependencies": {
@@ -13,7 +13,7 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "wasm-pack build --target web && bun build ts/*.ts --outdir=dist --splitting"
+    "build": "tsc && wasm-pack build --target web && bun build ts/*.ts --outdir=dist --splitting"
   },
   "files": [
     "ts",

@@ -1,7 +1,7 @@
 import { Parser } from "./parser";
-import { TrieBuilder } from "./trie-builder.js";
-import type { StatsByFile } from "./types/stats.js";
-import type { StatHandlers } from "./types/handlers.js";
+import { TrieBuilder } from "./trie-builder";
+import type { StatsByFile } from "./types/stats";
+import type { StatHandlers } from "./types/handlers";
 
 /**
  * Codes taken from the 'preferred language' setting at https://www.pathofexile.com/my-account/preferences

@@ -1,6 +1,4 @@
-import type { Trie } from "./types";
-
-import type { IntermediateResult, ParseResult } from "./types";
+import type { IntermediateResult, ParseResult, Trie } from "./";
 import type { IntHandler, StatHandlers } from "./types/handlers";
 import type { Token } from "./types/stats";
 

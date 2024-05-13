@@ -1,12 +1,14 @@
-import { parse } from "poestat";
-import "./App.css";
+import { ParseResult, parse } from "poestat";
 import { Fragment, useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
   const [text, setText] = useState("");
-  const [parsed, setParsed] = useState();
+  const [parsed, setParsed] = useState<ParseResult[]>();
 
-  useEffect(() => {parse(text).then(setParsed)}, [text]);
+  useEffect(() => {
+    parse(text).then(setParsed);
+  }, [text]);
 
   return (
     <>
@@ -18,7 +20,7 @@ function App() {
           placeholder="paste stat text here"
         />
         {text &&
-          parsed.map((s) => (
+          parsed?.map((s) => (
             <Fragment key={s.text}>
               <h3>{s.text}</h3>
               {s.stats.map((stat) => (

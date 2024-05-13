@@ -1,6 +1,6 @@
-import type { StatHandlers } from "./types/handlers.js";
-import type { Trie } from "./types/index.js";
-import type { Stat, StatsByFile, Token } from "./types/stats.js";
+import type { StatHandlers } from "./types/handlers";
+import type { Trie } from "./index";
+import type { Stat, StatsByFile, Token } from "./types/stats";
 
 export class TrieBuilder {
   trie: Trie = {};
