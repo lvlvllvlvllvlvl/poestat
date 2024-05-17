@@ -1,4 +1,4 @@
-use std::{cell::RefCell, error::Error, panic::Location, rc::Rc};
+use std::{error::Error, panic::Location};
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -26,17 +26,14 @@ pub struct ParsedStat {
     base_value: f64,
 }
 
-pub type Trie = Rc<RefCell<TrieNode>>;
-
-#[derive(Clone, Default)]
-pub struct TrieNode {
-    pub child_map: Option<std::collections::HashMap<String, Trie>>,
-    pub num_child: Option<Trie>,
-    pub any_child: Option<Trie>,
-    pub stat_child: Option<Trie>,
-    pub stat_id: Option<String>,
+pub struct Trie {
+    pub child_map: phf::Map<&'static str, &'static Trie>,
+    pub num_child: Option<&'static Trie>,
+    pub any_child: Option<&'static Trie>,
+    pub stat_child: Option<&'static Trie>,
     pub stat_value: Option<i32>,
-    pub terminal: Option<String>,
+    pub stat_id: Option<&'static str>,
+    pub terminal: Option<&'static str>,
 }
 
 pub struct IntermediateResult {

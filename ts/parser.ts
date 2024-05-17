@@ -8,7 +8,14 @@ export class Parser {
     readonly tokens: Record<string, Token[]>,
     readonly implied: Record<string, Record<string, number>>,
     readonly handlers: StatHandlers
-  ) {}
+  ) {
+    for (const h of Object.values(handlers)) {
+      if (!h.type) {
+        console.log(h);
+        throw new Error();
+      }
+    }
+  }
 
   parse = (
     mod: string,

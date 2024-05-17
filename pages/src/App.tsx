@@ -1,6 +1,14 @@
-import { ParseResult, parse } from "poestat";
+import { ParseResult, parse, wasm } from "poestat";
 import { Fragment, useEffect, useState } from "react";
 import "./App.css";
+
+const hello = await wasm;
+const json = (await Promise.all(
+  [
+    `https://lvlvllvlvllvlvl.github.io/RePoE/stats_by_file.min.json`,
+    `https://lvlvllvlvllvlvl.github.io/RePoE/stat_value_handlers.min.json`,
+  ].map((u) => fetch(u).then((r) => r.text()))
+)) as [string, string];
 
 function App() {
   const [text, setText] = useState("");
@@ -13,6 +21,7 @@ function App() {
   return (
     <>
       <h1>poe stat parser</h1>
+      {hello(...json)}
       <div className="card">
         <textarea
           value={text}

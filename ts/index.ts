@@ -3,6 +3,7 @@ export * from "./parse";
 
 export type * from "./types/handlers";
 export type * from "./types/stats";
+
 export interface Trie {
   childMap?: { [token: string]: Trie };
   numChild?: Trie;

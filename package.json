@@ -13,7 +13,9 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "tsc && wasm-pack build --target web && bun build ts/*.ts --outdir=dist --splitting"
+    "build": "tsc && wasm-pack build --target web && bun build ts/*.ts --outdir=dist --splitting",
+    "dev": "tsc && wasm-pack build --target web --dev && bun build ts/*.ts --outdir=dist --splitting",
+    "profiling": "tsc && wasm-pack build --target web --profiling && bun build ts/*.ts --outdir=dist --splitting"
   },
   "files": [
     "ts",
