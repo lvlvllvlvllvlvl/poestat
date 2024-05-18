@@ -38,7 +38,8 @@ jobs:
         uses: jetli/wasm-pack-action@v0.4.0
       - run: |
           bun install
-          ./generate.sh
+          bun run ts/scripts/write.ts
+          bun run ts/scripts/types.ts
           bun run build
           bun test
           bun link

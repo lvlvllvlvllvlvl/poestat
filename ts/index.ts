@@ -5,12 +5,12 @@ export type * from "./types/handlers";
 export type * from "./types/stats";
 
 export interface Trie {
-  childMap?: { [token: string]: Trie };
-  numChild?: Trie;
-  anyChild?: Trie;
-  statChild?: Trie;
-  statId?: string;
-  statValue?: number;
+  child_map?: { [token: string]: Trie };
+  num_child?: Trie;
+  any_child?: Trie;
+  stat_child?: Trie;
+  stat_id?: string;
+  stat_value?: number;
   terminal?: string;
 }
 

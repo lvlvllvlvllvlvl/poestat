@@ -50,20 +50,20 @@ export class TrieBuilder {
     switch (token.type) {
       case "literal":
         for (const word of this.tokenise(token.value)) {
-          if (!node.childMap) {
-            node.childMap = {};
+          if (!node.child_map) {
+            node.child_map = {};
           }
-          if (!(word in node.childMap)) {
-            node.childMap[word] = {};
+          if (!(word in node.child_map)) {
+            node.child_map[word] = {};
           }
-          node = node.childMap[word];
+          node = node.child_map[word];
         }
         return [node];
       case "number":
-        if (!node.numChild) {
-          node.numChild = {};
+        if (!node.num_child) {
+          node.num_child = {};
         }
-        return [node.numChild];
+        return [node.num_child];
       case "enum":
         const handler = this.handlers[token.stat_value_handler];
         if (handler.type !== "relational" || !handler.values) {
@@ -72,20 +72,20 @@ export class TrieBuilder {
         const nodes: Trie[] = [];
         for (const [k, v] of Object.entries(handler.values)) {
           const added = this.addToTrie(node, { type: "literal", value: v });
-          added.forEach((a) => (a.statValue = parseInt(k)));
+          added.forEach((a) => (a.stat_value = parseInt(k)));
           nodes.push(...added);
         }
         return nodes;
       case "unknown":
-        if (!node.anyChild) {
-          node.anyChild = {};
+        if (!node.any_child) {
+          node.any_child = {};
         }
-        return [node.anyChild];
+        return [node.any_child];
       case "nested":
-        if (!node.statChild) {
-          node.statChild = { statId: token.added_stat };
+        if (!node.stat_child) {
+          node.stat_child = { stat_id: token.added_stat };
         }
-        return [node.statChild];
+        return [node.stat_child];
       default:
         throw Error("Unknown token type: " + (token as any).type);
     }

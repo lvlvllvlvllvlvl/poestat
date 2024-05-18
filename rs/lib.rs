@@ -1,11 +1,10 @@
-use models::{RSError, Trie};
+use models::RSError;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 mod models;
-
-static TRIE: &'static Trie = include!(concat!("../data/trie.rs"));
+mod data;
 
 #[wasm_bindgen]
 pub fn hello() -> Result<usize, RSError> {
-    Ok(TRIE.child_map.len())
+    Ok(data::TRIE.child_map.len())
 }

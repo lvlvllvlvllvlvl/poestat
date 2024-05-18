@@ -135,9 +135,9 @@ export class Parser {
     log(
       i,
       word,
-      Object.keys(node.childMap || {}),
-      Boolean(node.numChild),
-      Boolean(node.anyChild),
+      Object.keys(node.child_map || {}),
+      Boolean(node.num_child),
+      Boolean(node.any_child),
       node.terminal
     );
 
@@ -146,43 +146,43 @@ export class Parser {
       return {
         text: node.terminal,
         count: 0,
-        values: node.statValue ? [node.statValue] : [],
+        values: node.stat_value ? [node.stat_value] : [],
       };
     }
 
     const results: IntermediateResult[] = [];
 
-    if (node.childMap && word in node?.childMap) {
+    if (node.child_map && word in node?.child_map) {
       const result = this.searchTrie(
         words[i],
         words,
         i + 1,
-        node.childMap[word],
+        node.child_map[word],
         root,
         log
       );
       if (result.text) {
-        if (node.statValue) result.values.unshift(node.statValue);
+        if (node.stat_value) result.values.unshift(node.stat_value);
         result.count++;
         results.push(result);
       }
     }
-    if (node.numChild) {
+    if (node.num_child) {
       const match = /^(([+-])?\d*\.?\d+)(\D.*)?$/.exec(word);
       log(match);
       if (match) {
         const [, num, prefix, suffix] = match;
         if (
           prefix &&
-          node.childMap &&
-          "+" in node.childMap &&
-          node.childMap["+"].numChild
+          node.child_map &&
+          "+" in node.child_map &&
+          node.child_map["+"].num_child
         ) {
           const result = this.searchTrie(
             word.substring(1),
             words,
             i,
-            node.childMap["+"],
+            node.child_map["+"],
             root,
             log
           );
@@ -193,7 +193,7 @@ export class Parser {
             suffix,
             words,
             i,
-            node.numChild,
+            node.num_child,
             root,
             log
           );
@@ -206,7 +206,7 @@ export class Parser {
             words[i],
             words,
             i + 1,
-            node.numChild,
+            node.num_child,
             root,
             log
           );
@@ -219,7 +219,7 @@ export class Parser {
       }
     }
 
-    if (node.statChild && canRecurse) {
+    if (node.stat_child && canRecurse) {
       const nested = this.searchTrie(word, words, i, root, root, log, false);
       log("nested stat", nested);
       if (nested.text) {
@@ -227,7 +227,7 @@ export class Parser {
           words[i + nested.count - 1],
           words,
           i + nested.count,
-          node.statChild,
+          node.stat_child,
           root,
           log
         );
@@ -238,12 +238,12 @@ export class Parser {
         }
       }
     }
-    if (node.anyChild) {
+    if (node.any_child) {
       const result = this.searchTrie(
         words[i],
         words,
         i + 1,
-        node.anyChild,
+        node.any_child,
         root,
         log
       );
@@ -256,7 +256,7 @@ export class Parser {
     let result = {
       text: node.terminal,
       count: 0,
-      values: node.statValue ? [node.statValue] : [],
+      values: node.stat_value ? [node.stat_value] : [],
     };
     for (const r of results) {
       if (r.count > result.count) result = r;
