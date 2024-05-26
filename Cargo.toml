@@ -1,8 +1,10 @@
 [package]
 name = "poestat-wasm"
 version = "0.1.0"
-authors = ["ivy <lvlvllvlvllvlvl@users.noreply.github.com>"]
-edition = "2018"
+edition = "2021"
+license = "MIT"
+description = "stat text parser for Path of Exile"
+repository = "https://github.com/lvlvllvlvllvlvl/poestat"
 
 [lib]
 path = "rs/lib.rs"
@@ -15,6 +17,6 @@ serde_json = "1.0.117"
 ts-rs = { version = "8.1.0", features = ["no-serde-warnings", "serde_json"] }
 tsify = { version = "0.4.5", features = ["js"] }
 wasm-bindgen = "0.2.70"
-poestat_static = { path = "../poestat_static" }
+poestat_static = "0.1.0"
 console_error_panic_hook = "0.1.7"
 serde-wasm-bindgen = "0.6.5"
