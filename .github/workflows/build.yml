@@ -36,6 +36,7 @@ jobs:
           bun link
       - name: build pages
         run: |
+          bun link poestat
           bun install
           bun run build
         working-directory: pages
