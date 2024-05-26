@@ -26,7 +26,7 @@ jobs:
       - name: install bun
         uses: oven-sh/setup-bun@v1
       - name: install wasm-pack
-        uses: jetli/wasm-pack-action@v0.4.0
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: |
           bun install
           bun run ts/scripts/write.ts
