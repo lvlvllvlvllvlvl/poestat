@@ -1,4 +1,4 @@
-export { Parser } from "./parser";
+export { Parser, tokenise } from "./parser";
 export * from "./parse";
 
 export type * from "./types/handlers";

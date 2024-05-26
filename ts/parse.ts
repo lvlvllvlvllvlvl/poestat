@@ -2,7 +2,7 @@ import { Parser } from "./parser";
 import { TrieBuilder } from "./trie-builder";
 import type { StatsByFile } from "./types/stats";
 import type { StatHandlers } from "./types/handlers";
-import init, { hello } from "../pkg/poestat_wasm";
+import init, { parse as wasm_parse } from "../pkg/poestat_wasm";
 
 /**
  * Codes taken from the 'preferred language' setting at https://www.pathofexile.com/my-account/preferences
@@ -71,5 +71,5 @@ export const parse = async (text: string, ...languages: Language[]) => {
 
 export const wasm = (async () => {
   await init();
-  return hello;
+  return wasm_parse;
 })();

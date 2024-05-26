@@ -27,7 +27,7 @@ export class TrieBuilder {
             // console.warn("Mismatched terminal node", existing, newNode);
           }
         } else {
-          node.terminal = stat_text;
+          node.terminal = stat_text || undefined;
         }
       }
     }

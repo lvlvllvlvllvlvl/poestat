@@ -2,6 +2,10 @@ import type { IntermediateResult, ParseResult, Trie } from "./";
 import type { IntHandler, StatHandlers } from "./types/handlers";
 import type { Token } from "./types/stats";
 
+export function tokenise(str: string) {
+  return str.trim().toLocaleLowerCase("en-US").normalize().split(/\s+/);
+}
+
 export class Parser {
   constructor(
     readonly trie: Trie,
@@ -21,7 +25,7 @@ export class Parser {
     mod: string,
     log: (...args: unknown[]) => void = () => {}
   ): ParseResult[] => {
-    const words = this.tokenise(mod);
+    const words = tokenise(mod);
     log(mod, words);
     const results: ParseResult[] = [];
     let index = 0;
@@ -119,10 +123,6 @@ export class Parser {
     return ((n - addend) * divisor) / multiplier;
   }
 
-  tokenise(str: string) {
-    return str.trim().toLocaleLowerCase("en-US").normalize().split(/\s+/);
-  }
-
   searchTrie(
     word: string,
     words: string[],
@@ -150,7 +150,13 @@ export class Parser {
       };
     }
 
-    const results: IntermediateResult[] = [];
+    const results: IntermediateResult[] = [
+      {
+        text: node.terminal,
+        count: 0,
+        values: node.stat_value ? [node.stat_value] : [],
+      },
+    ];
 
     if (node.child_map && word in node?.child_map) {
       const result = this.searchTrie(
@@ -253,15 +259,13 @@ export class Parser {
       }
     }
 
-    let result = {
-      text: node.terminal,
-      count: 0,
-      values: node.stat_value ? [node.stat_value] : [],
-    };
-    for (const r of results) {
-      if (r.count > result.count) result = r;
-    }
-
-    return result;
+    results.sort(
+      (l, r) =>
+        r.count - l.count ||
+        r.values.length - l.values.length ||
+        +!!r.text - +!!l.text ||
+        r.text!.localeCompare(l.text!)
+    );
+    return results[0];
   }
 }
