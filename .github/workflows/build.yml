@@ -25,15 +25,6 @@ jobs:
         uses: actions/checkout@v4
       - name: install bun
         uses: oven-sh/setup-bun@v1
-      - name: install cargo
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt
-      - name: install typify
-        uses: baptiste0928/cargo-install@v3
-        with:
-          crate: cargo-typify
       - name: install wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
       - run: |
